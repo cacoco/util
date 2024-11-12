@@ -1,17 +1,18 @@
 package com.twitter.jvm
 
 import com.twitter.finagle.stats.StatsReceiver
-import java.lang.management.{MemoryPoolMXBean, MemoryUsage, ManagementFactory}
+import java.lang.management.MemoryPoolMXBean
+import java.lang.management.MemoryUsage
+import java.lang.management.ManagementFactory
 import java.util.concurrent.LinkedBlockingQueue
 import java.util.concurrent.atomic.AtomicLong
 import java.util.{List => juList}
-import javax.management.openmbean.{CompositeData, TabularData}
-import javax.management.{
-  ListenerNotFoundException,
-  Notification,
-  NotificationListener,
-  NotificationEmitter
-}
+import javax.management.openmbean.CompositeData
+import javax.management.openmbean.TabularData
+import javax.management.ListenerNotFoundException
+import javax.management.Notification
+import javax.management.NotificationListener
+import javax.management.NotificationEmitter
 import scala.collection.mutable
 import scala.jdk.CollectionConverters._
 
@@ -30,8 +31,7 @@ private[jvm] class Allocations(statsReceiver: StatsReceiver) {
 
   private[this] val edenPool: Option[MemoryPoolMXBean] =
     ManagementFactory.getMemoryPoolMXBeans.asScala.find { bean =>
-      // todo: see if we can support the g1 collector
-      bean.getName == "Par Eden Space" || bean.getName == "PS Eden Space"
+      bean.getName == "Par Eden Space" || bean.getName == "PS Eden Space" || bean.getName == "G1 Eden Space"
     }
 
   private[this] val edenSizeAfterLastGc = new AtomicLong()
