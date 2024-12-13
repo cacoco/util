@@ -4,15 +4,15 @@ import com.twitter.conversions.StorageUnitOps._
 import com.twitter.conversions.DurationOps._
 import com.twitter.util.Time
 import java.lang.management.ManagementFactory
-import java.util.logging.{Level, Logger}
-import javax.management.openmbean.{CompositeData, CompositeDataSupport}
-import javax.management.{
-  Notification,
-  NotificationEmitter,
-  NotificationListener,
-  ObjectName,
-  RuntimeMBeanException
-}
+import java.util.logging.Level
+import java.util.logging.Logger
+import javax.management.openmbean.CompositeData
+import javax.management.openmbean.CompositeDataSupport
+import javax.management.Notification
+import javax.management.NotificationEmitter
+import javax.management.NotificationListener
+import javax.management.ObjectName
+import javax.management.RuntimeMBeanException
 import javax.naming.OperationNotSupportedException
 import scala.jdk.CollectionConverters._
 import scala.language.reflectiveCalls
@@ -115,7 +115,7 @@ class Hotspot extends Jvm {
     }
   }
 
-  def snap: Snapshot = {
+  def snap: Snapshot = synchronized {
     val cs = counters("")
     val heap = for {
       invocations <- cs.get("sun.gc.collector.0.invocations").map(long)
